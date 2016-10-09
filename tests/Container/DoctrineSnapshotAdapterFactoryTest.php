@@ -1,13 +1,14 @@
 <?php
-/*
+/**
  * This file is part of the prooph/snapshot-doctrine-adapter.
- * (c) 2014 - 2015 prooph software GmbH <contact@prooph.de>
+ * (c) 2014-2016 prooph software GmbH <contact@prooph.de>
+ * (c) 2015-2016 Sascha-Oliver Prolic <saschaprolic@googlemail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- * Date: 10/20/15 - 19:22
  */
+
+declare(strict_types=1);
 
 namespace ProophTest\EventStore\Snapshot\Adapter\Doctrine\Container;
 
