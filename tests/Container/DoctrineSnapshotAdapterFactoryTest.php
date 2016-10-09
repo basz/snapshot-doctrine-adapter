@@ -48,6 +48,7 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
                 ],
             ],
         ]);
+
         $factory = new DoctrineSnapshotAdapterFactory();
         $adapter = $factory($container->reveal());
         $this->assertInstanceOf(DoctrineSnapshotAdapter::class, $adapter);
@@ -94,17 +95,20 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
         $container->get('config')->willReturn([
             'prooph' => [
                 'snapshot_store' => [
-                    'adapter' => [
-                        'type' => DoctrineSnapshotAdapter::class,
-                        'options' => [
-                            'connection_alias' => 'my_connection'
-                        ]
-                    ]
-                ]
-            ]
+                    'default' => [
+                        'adapter' => [
+                            'type' => DoctrineSnapshotAdapter::class,
+                            'options' => [
+                                'connection_alias' => 'my_connection'
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
         $container->has('my_connection')->willReturn(true);
         $container->get('my_connection')->willReturn($connection->reveal());
+
         $factory = new DoctrineSnapshotAdapterFactory();
         $adapter = $factory($container->reveal());
         $this->assertInstanceOf(DoctrineSnapshotAdapter::class, $adapter);
@@ -119,21 +123,24 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
         $container->get('config')->willReturn([
             'prooph' => [
                 'snapshot_store' => [
-                    'adapter' => [
-                        'type' => DoctrineSnapshotAdapter::class,
-                        'options' => [
-                            'connection' => [
-                                'driver' => 'pdo_sqlite',
-                                'dbname' => ':memory:'
+                    'default' => [
+                        'adapter' => [
+                            'type' => DoctrineSnapshotAdapter::class,
+                            'options' => [
+                                'connection' => [
+                                    'driver' => 'pdo_sqlite',
+                                    'dbname' => ':memory:'
+                                ],
+                                'snapshot_table_map' => [
+                                    'foo' => 'bar'
+                                ],
                             ],
-                            'snapshot_table_map' => [
-                                'foo' => 'bar'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]);
+
         $factory = new DoctrineSnapshotAdapterFactory();
         $adapter = $factory($container->reveal());
         $this->assertInstanceOf(DoctrineSnapshotAdapter::class, $adapter);
@@ -151,14 +158,17 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
         $container->get('config')->willReturn([
             'prooph' => [
                 'snapshot_store' => [
-                    'adapter' => [
-                        'type' => DoctrineSnapshotAdapter::class,
-                        'options' => [
-                        ]
-                    ]
-                ]
-            ]
+                    'default' => [
+                        'adapter' => [
+                            'type' => DoctrineSnapshotAdapter::class,
+                            'options' => [
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
+
         $factory = new DoctrineSnapshotAdapterFactory();
         $factory($container->reveal());
     }
