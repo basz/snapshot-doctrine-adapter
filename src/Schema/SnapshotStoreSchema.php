@@ -25,11 +25,8 @@ final class SnapshotStoreSchema
 {
     /**
      * Use this method when you work with a single stream strategy
-     *
-     * @param Schema $schema
-     * @param string $snapshotName Defaults to 'snapshot'
      */
-    public static function create(Schema $schema, $snapshotName = 'snapshot')
+    public static function create(Schema $schema, string $snapshotName = 'snapshot'): void
     {
         $snapshot = $schema->createTable($snapshotName);
 
@@ -44,11 +41,8 @@ final class SnapshotStoreSchema
 
     /**
      * Drop a stream schema
-     *
-     * @param Schema $schema
-     * @param string $snapshotName Defaults to 'snapshot'
      */
-    public static function drop(Schema $schema, $snapshotName = 'snapshot')
+    public static function drop(Schema $schema, string $snapshotName = 'snapshot'): void
     {
         $schema->dropTable($snapshotName);
     }

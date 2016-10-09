@@ -15,6 +15,7 @@ namespace ProophTest\EventStore\Snapshot\Adapter\Doctrine\Container;
 use Doctrine\DBAL\Connection;
 use Interop\Container\ContainerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Prooph\EventStore\Adapter\Exception\ConfigurationException;
 use Prooph\EventStore\Snapshot\Adapter\Doctrine\Container\DoctrineSnapshotAdapterFactory;
 use Prooph\EventStore\Snapshot\Adapter\Doctrine\DoctrineSnapshotAdapter;
 
@@ -27,23 +28,25 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_adapter_with_connection_options()
+    public function it_creates_adapter_with_connection_options(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('config')->willReturn([
             'prooph' => [
                 'snapshot_store' => [
-                    'adapter' => [
-                        'type' => DoctrineSnapshotAdapter::class,
-                        'options' => [
-                            'connection' => [
-                                'driver' => 'pdo_sqlite',
-                                'dbname' => ':memory:'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                    'default' => [
+                        'adapter' => [
+                            'type' => DoctrineSnapshotAdapter::class,
+                            'options' => [
+                                'connection' => [
+                                    'driver' => 'pdo_sqlite',
+                                    'dbname' => ':memory:'
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
         $factory = new DoctrineSnapshotAdapterFactory();
         $adapter = $factory($container->reveal());
@@ -53,7 +56,37 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_adapter_with_connection_alias()
+    public function it_creates_adapter_with_connection_options_via_call_static(): void
+    {
+        $container = $this->prophesize(ContainerInterface::class);
+        $container->get('config')->willReturn([
+            'prooph' => [
+                'snapshot_store' => [
+                    'another' => [
+                        'adapter' => [
+                            'type' => DoctrineSnapshotAdapter::class,
+                            'options' => [
+                                'connection' => [
+                                    'driver' => 'pdo_sqlite',
+                                    'dbname' => ':memory:'
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $type = 'another';
+
+        $adapter = DoctrineSnapshotAdapterFactory::$type($container->reveal());
+        $this->assertInstanceOf(DoctrineSnapshotAdapter::class, $adapter);
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_adapter_with_connection_alias(): void
     {
         $connection = $this->prophesize(Connection::class);
 
@@ -80,7 +113,7 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_adapter_with_snapshot_table_map()
+    public function it_creates_adapter_with_snapshot_table_map(): void
     {
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('config')->willReturn([
@@ -108,11 +141,12 @@ final class DoctrineSnapshotAdapterFactoryTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Prooph\EventStore\Exception\ConfigurationException
-     * @expectedExceptionMessage [Configuration Error] Prooph\EventStore\Snapshot\Adapter\Doctrine\Container\DoctrineSnapshotAdapterFactory was not able to locate or create a valid Doctrine\DBAL\Connection
      */
-    public function it_throws_exception_when_no_connection_found()
+    public function it_throws_exception_when_no_connection_found(): void
     {
+        $this->expectException(ConfigurationException::class);
+        $this->expectExceptionMessage('Prooph\EventStore\Snapshot\Adapter\Doctrine\Container\DoctrineSnapshotAdapterFactory was not able to locate or create a valid Doctrine\DBAL\Connection');
+
         $container = $this->prophesize(ContainerInterface::class);
         $container->get('config')->willReturn([
             'prooph' => [

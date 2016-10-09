@@ -35,24 +35,13 @@ final class DoctrineSnapshotAdapter implements Adapter
      */
     private $snapshotTableMap = [];
 
-    /**
-     * @param Connection $connection
-     * @param array $snapshotTableMap
-     */
     public function __construct(Connection $connection, array $snapshotTableMap = [])
     {
         $this->connection = $connection;
         $this->snapshotTableMap = $snapshotTableMap;
     }
 
-    /**
-     * Get the aggregate root if it exists otherwise null
-     *
-     * @param AggregateType $aggregateType
-     * @param string $aggregateId
-     * @return Snapshot
-     */
-    public function get(AggregateType $aggregateType, $aggregateId)
+    public function get(AggregateType $aggregateType, string $aggregateId): ?Snapshot
     {
         $queryBuilder = $this->connection->createQueryBuilder();
         $table = $this->getTable($aggregateType);
@@ -71,7 +60,7 @@ final class DoctrineSnapshotAdapter implements Adapter
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if (!$result) {
-            return;
+            return null;
         }
 
         return new Snapshot(
@@ -83,13 +72,7 @@ final class DoctrineSnapshotAdapter implements Adapter
         );
     }
 
-    /**
-     * Save a snapshot
-     *
-     * @param Snapshot $snapshot
-     * @return void
-     */
-    public function save(Snapshot $snapshot)
+    public function save(Snapshot $snapshot): void
     {
         $table = $this->getTable($snapshot->aggregateType());
 
@@ -125,13 +108,7 @@ final class DoctrineSnapshotAdapter implements Adapter
         $queryBuilder->execute();
     }
 
-    /**
-     * Get table name for given aggregate type
-     *
-     * @param AggregateType $aggregateType
-     * @return string
-     */
-    private function getTable(AggregateType $aggregateType)
+    private function getTable(AggregateType $aggregateType): string
     {
         if (isset($this->snapshotTableMap[$aggregateType->toString()])) {
             $tableName = $this->snapshotTableMap[$aggregateType->toString()];
@@ -144,11 +121,7 @@ final class DoctrineSnapshotAdapter implements Adapter
         return $tableName;
     }
 
-    /**
-     * @param AggregateType $aggregateType
-     * @return string
-     */
-    private function getShortAggregateTypeName(AggregateType $aggregateType)
+    private function getShortAggregateTypeName(AggregateType $aggregateType): string
     {
         $streamName = str_replace('-', '_', $aggregateType->toString());
         return implode('', array_slice(explode('\\', $streamName), -1));

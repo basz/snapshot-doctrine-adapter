@@ -25,7 +25,7 @@ final class SnapshotStoreSchemaTest extends TestCase
     /**
      * @test
      */
-    public function it_drops_snapshot_table()
+    public function it_drops_snapshot_table(): void
     {
         $schema = $this->prophesize(Schema::class);
         $schema->dropTable('table_name');

@@ -39,7 +39,7 @@ final class DoctrineSnapshotAdapterTest extends TestCase
      */
     private $connection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $connection = [
             'driver' => 'pdo_sqlite',
@@ -52,7 +52,7 @@ final class DoctrineSnapshotAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_saves_and_reads()
+    public function it_saves_and_reads(): void
     {
         $schema = new Schema();
 
@@ -69,7 +69,7 @@ final class DoctrineSnapshotAdapterTest extends TestCase
         $aggregateRoot = new \stdClass();
         $aggregateRoot->foo = 'bar';
 
-        $time = microtime(true);
+        $time = (string) microtime(true);
         if (false === strpos($time, '.')) {
             $time .= '.0000';
         }
@@ -98,7 +98,7 @@ final class DoctrineSnapshotAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_uses_custom_snapshot_table_map()
+    public function it_uses_custom_snapshot_table_map(): void
     {
         $schema = new Schema();
 
@@ -115,7 +115,7 @@ final class DoctrineSnapshotAdapterTest extends TestCase
         $aggregateRoot = new \stdClass();
         $aggregateRoot->foo = 'bar';
 
-        $time = microtime(true);
+        $time = (string) microtime(true);
         if (false === strpos($time, '.')) {
             $time .= '.0000';
         }
@@ -139,7 +139,7 @@ final class DoctrineSnapshotAdapterTest extends TestCase
     /**
      * @test
      */
-    public function it_deals_with_resources_on_serialized_aggregate_roots()
+    public function it_deals_with_resources_on_serialized_aggregate_roots(): void
     {
         /** @var Connection|\PHPUnit_Framework_MockObject_MockObject $connection */
         $connection = $this->getMockBuilder(Connection::class)->disableOriginalConstructor()->getMock();
